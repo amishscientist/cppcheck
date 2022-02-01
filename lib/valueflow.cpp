@@ -5634,6 +5634,8 @@ struct ConditionHandler {
     virtual ~ConditionHandler() {}
 };
 
+#pragma GCC push_options
+#pragma GCC optimize("O0")
 static void valueFlowCondition(const ValuePtr<ConditionHandler>& handler,
                                TokenList* tokenlist,
                                SymbolDatabase* symboldatabase,
@@ -5643,6 +5645,44 @@ static void valueFlowCondition(const ValuePtr<ConditionHandler>& handler,
     handler->beforeCondition(tokenlist, symboldatabase, errorLogger, settings);
     handler->afterCondition(tokenlist, symboldatabase, errorLogger, settings);
 }
+
+static void WR01valueFlowCondition(const ValuePtr<ConditionHandler>& handler,
+                               TokenList* tokenlist,
+                               SymbolDatabase* symboldatabase,
+                               ErrorLogger* errorLogger,
+                               const Settings* settings)
+{
+    handler->beforeCondition(tokenlist, symboldatabase, errorLogger, settings);
+    handler->afterCondition(tokenlist, symboldatabase, errorLogger, settings);
+}
+static void WR02valueFlowCondition(const ValuePtr<ConditionHandler>& handler,
+                               TokenList* tokenlist,
+                               SymbolDatabase* symboldatabase,
+                               ErrorLogger* errorLogger,
+                               const Settings* settings)
+{
+    handler->beforeCondition(tokenlist, symboldatabase, errorLogger, settings);
+    handler->afterCondition(tokenlist, symboldatabase, errorLogger, settings);
+}
+static void WR03valueFlowCondition(const ValuePtr<ConditionHandler>& handler,
+                               TokenList* tokenlist,
+                               SymbolDatabase* symboldatabase,
+                               ErrorLogger* errorLogger,
+                               const Settings* settings)
+{
+    handler->beforeCondition(tokenlist, symboldatabase, errorLogger, settings);
+    handler->afterCondition(tokenlist, symboldatabase, errorLogger, settings);
+}
+static void WR04valueFlowCondition(const ValuePtr<ConditionHandler>& handler,
+                               TokenList* tokenlist,
+                               SymbolDatabase* symboldatabase,
+                               ErrorLogger* errorLogger,
+                               const Settings* settings)
+{
+    handler->beforeCondition(tokenlist, symboldatabase, errorLogger, settings);
+    handler->afterCondition(tokenlist, symboldatabase, errorLogger, settings);
+}
+#pragma GCC pop_options
 
 struct SimpleConditionHandler : ConditionHandler {
     virtual Analyzer::Result forward(Token* start,
@@ -7933,13 +7973,13 @@ void ValueFlow::setValues(TokenList *tokenlist, SymbolDatabase* symboldatabase, 
         valueFlowImpossibleValues(tokenlist, settings);
         valueFlowSymbolicIdentity(tokenlist);
         valueFlowSymbolicAbs(tokenlist, symboldatabase);
-        valueFlowCondition(SymbolicConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
+        WR01valueFlowCondition(SymbolicConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
         valueFlowSymbolicInfer(tokenlist, symboldatabase);
         valueFlowArrayBool(tokenlist);
         valueFlowRightShift(tokenlist, settings);
         valueFlowAfterAssign(tokenlist, symboldatabase, errorLogger, settings);
         valueFlowAfterSwap(tokenlist, symboldatabase, errorLogger, settings);
-        valueFlowCondition(SimpleConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
+        WR02valueFlowCondition(SimpleConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
         valueFlowInferCondition(tokenlist, settings);
         valueFlowSwitchVariable(tokenlist, symboldatabase, errorLogger, settings);
         valueFlowForLoop(tokenlist, symboldatabase, errorLogger, settings);
@@ -7952,10 +7992,10 @@ void ValueFlow::setValues(TokenList *tokenlist, SymbolDatabase* symboldatabase, 
             valueFlowAfterMove(tokenlist, symboldatabase, settings);
             valueFlowSmartPointer(tokenlist, errorLogger, settings);
             valueFlowIterators(tokenlist, settings);
-            valueFlowCondition(IteratorConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
+            WR03valueFlowCondition(IteratorConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
             valueFlowIteratorInfer(tokenlist, settings);
             valueFlowContainerSize(tokenlist, symboldatabase, errorLogger, settings);
-            valueFlowCondition(ContainerConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
+            WR04valueFlowCondition(ContainerConditionHandler{}, tokenlist, symboldatabase, errorLogger, settings);
         }
         valueFlowSafeFunctions(tokenlist, symboldatabase, settings);
         n--;
